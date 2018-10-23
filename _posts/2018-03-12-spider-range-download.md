@@ -15,7 +15,7 @@ title: "记一次爬虫遇到的坑，初探分段下载"
 
 然后开始鼓捣，先爬取某个视频的下载链接，然后把这个链接扔到`chrome`，打开开发者模式看网络请求，请求头大致如下：
 
-![headers]({{ site.url }}/images/spider-range-download/headers.jpg)
+![headers]({{ site.url }}/images/spider-range-download/headers.jpg)
 
 根据`请求头`和`响应头`，我没看出有什么端倪，感觉会不会是请求超时了，但是我监听了`error`方法，没有触发。然后又是一顿google，然后怀疑服务器端是不是`allowHalfOpen`问题，经过打印`socket`实例，排除了这个可能，再次陷入僵局。折腾了一番后我有点想放弃使用`request`了，而是拥抱[puppeteer](https://github.com/GoogleChrome/puppeteer)，因为`puppeteer`毕竟是基于`Chromium`的，因为我已经确认爬到的下载链接通过浏览器是可以下载的。但是`puppeteer`目前还没有下载功能，所以问题又回到了原点。
 
