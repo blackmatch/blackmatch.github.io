@@ -25,7 +25,7 @@ const package = require('./package.json')
 
 ## require的缓存机制
 
-当程序启动后，Node.js会在当前进程缓存所用require引入过的内容，并保存在全局对象`require.cache`中。所以，如果使用require引入一个动态文件，在程序运行过程中就无法获取最新的文件内容了。
+当程序启动后，Node.js会在当前进程缓存所有用require引入过的内容，并保存在全局对象`require.cache`中。所以，如果使用require引入一个动态文件，在程序运行过程中就无法获取最新的文件内容了。
 
 我们来看一个测试：
 
