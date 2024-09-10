@@ -14,11 +14,3 @@ url = "https://github.com/blackmatch"
 
 [social.params]
 icon = "brand-github"
-
-[[social]]
-identifier = "twitter"
-name = "X"
-url = "https://x.com/blackmatch_c"
-
-[social.params]
-icon = "brand-twitter"
