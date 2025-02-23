@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DeepSeek on blackmatch 的个人博客</title><link>https://www.blackmatch.cn/tags/deepseek/</link><description>Recent content in DeepSeek on blackmatch 的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 23 Feb 2025 11:13:00 +0800</lastBuildDate><atom:link href="https://www.blackmatch.cn/tags/deepseek/index.xml" rel="self" type="application/rss+xml"/><item><title>关于 DeepSeek 的一些思考</title><link>https://www.blackmatch.cn/p/%E5%85%B3%E4%BA%8E-deepseek-%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/</link><pubDate>Sun, 23 Feb 2025 11:13:00 +0800</pubDate><guid>https://www.blackmatch.cn/p/%E5%85%B3%E4%BA%8E-deepseek-%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/</guid><description>&lt;h2 id="deepseek-为什么这么火">DeepSeek 为什么这么火
+&lt;/h2>&lt;p>我印象中，过年前那几天，DeepSeek 就开始火起来了，当时我在家带娃，没有什么时间上网，但也能感受到 DeepSeek 的渗透。后来我查了一下，DeepSeek 是 1 月 11 号正式发布的，不到半个月的时间就家喻户晓，成为一款 “国民 AI 模型”。经过这段时间的使用和学习 DeepSeek，接下来谈谈我的一些看法。&lt;/p>
+&lt;h3 id="模型本身的强大">模型本身的强大
+&lt;/h3>&lt;p>普通人对大模型的认知，感觉短短两三年时间就从 “超出认知范围” 变成 “全民 AI” 的状态了。简单回顾一下，2022年底 ChatGPT 横空出世，紧接着 Gemini、Claude、Midjourney、Stable Defussion 等国外大模型也持续发力，国内有豆包、kimi等，还有很多很多我没有听说过的。不管是国外还是国内的大模型，这些模型都没有像 DeepSeek 渗透得这么彻底，我还记得 ChatGPT 刚发布没多久，我也是激情澎湃，还特意花 20 美元开了一个月会员，后来热情慢慢退去，再到后来使用频率越来越少了。这几天深入了解 DeepSeek 后，我认为它的强大之处在于：&lt;/p>
+&lt;ul>
+&lt;li>高性价比，用更少的算力，达到其他模型的效果，因此 DeepSeek 的定价会更低：&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E5%85%B3%E4%BA%8E-deepseek-%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/ds_v3_benchmark_hist_zh.jpeg"
+width="3521"
+height="2763"
+srcset="https://www.blackmatch.cn/p/%E5%85%B3%E4%BA%8E-deepseek-%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/ds_v3_benchmark_hist_zh_hu_a5569fb6d5ccaee9.jpeg 480w, https://www.blackmatch.cn/p/%E5%85%B3%E4%BA%8E-deepseek-%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/ds_v3_benchmark_hist_zh_hu_91ffa24fb94ba95b.jpeg 1024w"
+loading="lazy"
+alt="DeepSeek 性能测试"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="305px"
+>&lt;/p>
+&lt;blockquote>
+&lt;p>DeepSeek-V3 多项评测成绩超越了 Qwen2.5-72B 和 Llama-3.1-405B 等其他开源模型，并在性能上和世界顶尖的闭源模型 GPT-4o 以及 Claude-3.5-Sonnet 不分伯仲。&lt;/p>&lt;/blockquote>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E5%85%B3%E4%BA%8E-deepseek-%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/ds_v3_price_zh.jpeg"
+width="1280"
+height="702"
+srcset="https://www.blackmatch.cn/p/%E5%85%B3%E4%BA%8E-deepseek-%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/ds_v3_price_zh_hu_751306bac0ca96e7.jpeg 480w, https://www.blackmatch.cn/p/%E5%85%B3%E4%BA%8E-deepseek-%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/ds_v3_price_zh_hu_1675e0cd09a8059.jpeg 1024w"
+loading="lazy"
+alt="DeepSeek 价格"
+class="gallery-image"
+data-flex-grow="182"
+data-flex-basis="437px"
+>&lt;/p>
+&lt;blockquote>
+&lt;p>随着性能更强、速度更快的 DeepSeek-V3 更新上线，我们的模型 API 服务定价也将调整为每百万输入 tokens 0.5 元（缓存命中）/ 2 元（缓存未命中），每百万输出 tokens 8 元，以期能够持续地为大家提供更好的模型服务。&lt;/p>&lt;/blockquote>
+&lt;p>上面是 DeepSeek V3 模型的性能测试和价格对比图，总结一下就是：&lt;strong>又能打又便宜&lt;/strong>。&lt;/p>
+&lt;ul>
+&lt;li>推理模型+开源&lt;/li>
+&lt;/ul>
+&lt;p>2025 年 1 月 20日，DeepSeek 推出了 DeepSeek-R1 模型，并宣布开源此模型。&lt;/p>
+&lt;blockquote>
+&lt;p>此次我们的开源仓库（包括模型权重）统一采用标准化、宽松的 MIT License，完全开源，不限制商用，无需申请。&lt;/p>&lt;/blockquote>
+&lt;p>DeepSeek-R1 是一款推理能力强的大模型，性能对齐 OpenAI-o1 正式版。&lt;/p>
+&lt;blockquote>
+&lt;p>DeepSeek-R1 在后训练阶段大规模使用了强化学习技术，在仅有极少标注数据的情况下，极大提升了模型推理能力。在数学、代码、自然语言推理等任务上，性能比肩 OpenAI o1 正式版。&lt;/p>&lt;/blockquote>
+&lt;p>从使用体验上，个人感觉 DeepSeek-R1 模型让我们从 prompt 工程师转变成甲方，以往的大模型需要各种引导，努力钻研提示词才能得到满意的答案，而 DeepSeek-R1 模型只需要向它清晰地描述需求即可，这样使得它更普惠，普通老百姓也能低门槛使用。&lt;/p>
+&lt;p>由于 DeepSeek-R1 模型的开源，各家 AI 公司纷纷独立部署，推出 “满血版” DeepSeek-R1 模型，分担了官方的压力，同时也提高了 DeepSeek 的知名度。&lt;/p>
+&lt;h3 id="接地气时势造英雄">接地气，时势造英雄
+&lt;/h3>&lt;p>说来惭愧，我第一次听说 DeepSeek 是我的妻子告诉我的，过年前的某一天，我的妻子突然很兴奋的跟我说它用 DeepSeek 解决了某某问题，感觉很强大，极力推荐我去试试。随后我就立即去下载 App，&lt;strong>这款国产大模型使用上完全没有什么门槛，而且一推出就是完全免费使用&lt;/strong>。第一次使用给我眼前一亮的是，这个模型把思考过程都展示出来了，而且回答的内容很接地气。不久后，微信、小红书、B 站、抖音等等各种平台都出现了 DeepSeek 相关的内容，这些内容如洪水猛兽般冲进了我们的视野。&lt;/p>
+&lt;p>一款大模型的流行，往往会滋生各种 “搞钱” 教程，各大平台开始出现铺天盖地的利用 DeepSeek 搞钱的教程，结合这几年市场日渐下滑的大形势，很多失业的人仿佛抓到了救命稻草，开始各种学习和推广 DeepSeek，我们抛开 “搞钱” 这个话题，至少学习和使用 DeepSeek 能缓解一部分人群的焦虑，这也给 DeepSeek 添了一把火。&lt;/p>
+&lt;h3 id="各种推手">各种推手
+&lt;/h3>&lt;p>除了各家 AI 公司独立部署的推波助澜以及各种 “搞钱” 教程的推动外，学术研究者们也出了一份力，最具代表性的就是有清华大学背书的一系列研究资料：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E5%85%B3%E4%BA%8E-deepseek-%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/ds_learning_resources.jpg"
+width="982"
+height="336"
+srcset="https://www.blackmatch.cn/p/%E5%85%B3%E4%BA%8E-deepseek-%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/ds_learning_resources_hu_2b42760543984b0d.jpg 480w, https://www.blackmatch.cn/p/%E5%85%B3%E4%BA%8E-deepseek-%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/ds_learning_resources_hu_426eadbc9b4f8bdd.jpg 1024w"
+loading="lazy"
+alt="DeepSeek 学习资料"
+class="gallery-image"
+data-flex-grow="292"
+data-flex-basis="701px"
+>&lt;/p>
+&lt;p>如图是我下载的学习资料，网上还有相对应的各种视频资源，甚至还有人通过卖这些资料来赚钱。这些 “权威” 的学习资料，激起了人们深入探索 DeepSeek 的热情。&lt;/p>
+&lt;h2 id="对-deepseek-应该抱有怎样的心态">对 DeepSeek 应该抱有怎样的心态
+&lt;/h2>&lt;p>相比其他大模型，我从来没有像 DeepSeek 这样去深入了解和学习过。通过这段时间的使用和学习，我对 DeepSeek 的心情从一开始的兴奋到慢慢平静下来，&lt;strong>我觉得不管是大模型的发展，还是个人的成长，都是一条有起伏的曲线，最难能可贵的是不忘初心，持之以恒&lt;/strong>。&lt;/p>
+&lt;h3 id="学习使用但要避免过度依赖">学习使用，但要避免过度依赖
+&lt;/h3>&lt;p>在 ”全民 DeepSeek“ 的情况下，使用和学习 DeepSeek 肯定是很有必要的，但是不能把它当成无所不能的利器，更不能把它当做逆天改命的神器。不管从事什么工作，过度神话过度依赖某个工具都不是很明智的做法。DeepSeek 只是众多 AI 工具中的一款，未来肯定还会有各种强大的 AI 工具诞生，工具的本质是&lt;strong>辅助&lt;/strong>，使用工具的&lt;strong>人&lt;/strong>才是创世者。&lt;/p>
+&lt;h3 id="提升内核不忘初心">提升内核，不忘初心
+&lt;/h3>&lt;p>AI 对各行各业的确产生了很大的冲击，“AI 取代员工” 也不完全是危言耸听，但永远不要忘了人类才是创世主， 世间万物每时每刻都在变化，不管外界如何变化，我们的 “魂” 不能变。每个人有每个人的 “魂”，干一行有一行的使命，车夫的使命是把乘客安全送达目的地，即使现在有了飞机、汽车、高铁，相关工作人员的使命也没有变过。与其担心被 AI 干掉，不如想想如何让 AI 帮助自己更好地完成使命，让 AI 帮助自己提升认知，磨练技能。&lt;strong>AI 不是敌人，懒惰和安于现状才是&lt;/strong>。&lt;/p>
+&lt;h2 id="参考资料">参考资料
+&lt;/h2>&lt;ul>
+&lt;li>清华大学公布的相关研究资料&lt;/li>
+&lt;li>&lt;a class="link" href="https://api-docs.deepseek.com/zh-cn/news/news1226" target="_blank" rel="noopener"
+>https://api-docs.deepseek.com/zh-cn/news/news1226&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://api-docs.deepseek.com/zh-cn/news/news250120" target="_blank" rel="noopener"
+>https://api-docs.deepseek.com/zh-cn/news/news250120&lt;/a>&lt;/li>
+&lt;/ul></description></item></channel></rss>
