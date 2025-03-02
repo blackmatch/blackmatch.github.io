@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>数据库 on blackmatch 的个人博客</title><link>https://www.blackmatch.cn/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</link><description>Recent content in 数据库 on blackmatch 的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 23 Apr 2019 22:00:11 +0800</lastBuildDate><atom:link href="https://www.blackmatch.cn/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml"/><item><title> 浅谈 MySQL 中的大小写敏感问题</title><link>https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/</link><pubDate>Tue, 23 Apr 2019 22:00:11 +0800</pubDate><guid>https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/</guid><description>&lt;h2 id="前言">前言
+&lt;/h2>&lt;p>MySQL 中的大小写敏感问题，可以从服务器 (Server)、数据库 (Database)、表 (Table)、字段 (Column) 这 4 个级别来配置， MySQL 的很多配置、操作等都是基于这 4 个级别的。&lt;strong>这4个级别的优先级为：字段&amp;gt;表&amp;gt;数据库&amp;gt;服务器&lt;/strong>。而我们最关注的大小写敏感问题通常是对于数据而言的，举个简单的例子：字符串 &lt;code>book&lt;/code> 和字符串 &lt;code>Book&lt;/code> 存入到数据库后，我们通过 SQL 语句查询的时候，如果这两个字符串是相等的，那么说明 MySQL 比较这两个字符串的时候采用了 &lt;strong>大小写不敏感&lt;/strong> 的方式，反之，则是使用了 &lt;strong>大小写敏感&lt;/strong> 的方式。在讨论 MySQL 大小写敏感问题之前，我们需要先了解 MySQL 的两个概念：字符集 (CHARACTER SET) 和校对规则 (Collation)。&lt;/p>
+&lt;h2 id="字符集-character-set-和校对规则-collation">字符集 (CHARACTER SET) 和校对规则 (Collation)
+&lt;/h2>&lt;p>字符集的通常解释是：符号和编码的集合。举个例子：假设我们有 4 个字母： A,B,a,b。我们给每个字母编个号码： A=0,B=1,a=3,b=4 。我们就可以说字母 A 是符号，编号 0 是它的编码。所有的字母和它们的编码组合起来就是我们通常说的字符集。如果我们想要比较两个字符串 A 和 B 的值的大小，那么我们很容就想到他们的编码， A 的编码是 0 ， B 的编码是 1 ，因为 &lt;strong>0小于1&lt;/strong>，所以 &lt;strong>字符串 A 小于字符串 B&lt;/strong>。我们做的这个比较就是给这个 &lt;strong>字符集(CHARACTER SET)&lt;/strong> 应用了一套 &lt;strong>校对规则(Collation)&lt;/strong>。&lt;/p>
+&lt;p>MySQL 拥有一套完整的字符集和校对规则。每一种字符集至少包含一种校对规则，且每种字符集都有默认的校对规则。&lt;/p>
+&lt;ul>
+&lt;li>可以使用 &lt;code>SHOW CHARACTER SET&lt;/code> 语句查看 MySQL 支持的字符集列表：&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/show_character_set.png"
+width="431"
+height="390"
+srcset="https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/show_character_set_hu_984ba3d00b7b4754.png 480w, https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/show_character_set_hu_9ca75d79acc1be6d.png 1024w"
+loading="lazy"
+alt="show_character_set"
+class="gallery-image"
+data-flex-grow="110"
+data-flex-basis="265px"
+>&lt;/p>
+&lt;ul>
+&lt;li>可以使用 &lt;code>SHOW COLLATION&lt;/code> 语句查看 MySQL 支持的校对规则：&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/show_collation.png"
+width="617"
+height="384"
+srcset="https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/show_collation_hu_1b6504101556ff6a.png 480w, https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/show_collation_hu_973f370a694fa177.png 1024w"
+loading="lazy"
+alt="show_collation"
+class="gallery-image"
+data-flex-grow="160"
+data-flex-basis="385px"
+>&lt;/p>
+&lt;h2 id="大小写敏感问题">大小写敏感问题
+&lt;/h2>&lt;p>接着上面的例子，如果我们想要大写字母 A 和小写字母 a 是相等的呢？那么我们需要做的就是将大写字母 A 和小写字母 a 的编码设置为一致的，然后比较它们的编码即可。这就是我们通常说的 &lt;strong>大小写不敏感校对规则&lt;/strong>。反之，如果将大写字母 A 和小写字母 a 视为不相等的，就是我们通常说的 &lt;strong>大小写敏感校对规则&lt;/strong>。&lt;/p>
+&lt;p>在不指定字符集和校对规则的情况下， MySQL 会使用默认的字符集 (utf8) 和校对规则 (utf8_general_ci)。校对规则的名称遵循规则：&lt;strong>以其相关的字符集开头，后加上一个或者多个后缀用于区分不同的校对规则&lt;/strong>。相关后缀说明：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>后缀&lt;/th>
+&lt;th>含义&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>_ai&lt;/td>
+&lt;td>口音不敏感 (Accent insensitive)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>_as&lt;/td>
+&lt;td>口音敏感 (Accent sensitive)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>_ci&lt;/td>
+&lt;td>大小写不敏感 (Case insensitive)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>_cs&lt;/td>
+&lt;td>大小写敏感 (case-sensitive)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>_ks&lt;/td>
+&lt;td>假名敏感 (Kana sensitive)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>_bin&lt;/td>
+&lt;td>二进制 (Binary，大小写敏感 )&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>由此可以知道：&lt;strong>默认情况下，MySQL 所使用的校对规则是大小写不敏感的&lt;/strong>。&lt;/p>
+&lt;h2 id="设置大小写敏感">设置大小写敏感
+&lt;/h2>&lt;p>在日常的开发场景中，可能很少遇到需要设置大小写敏感的场景，而我恰巧遇到了。下面举例说明：&lt;/p>
+&lt;ul>
+&lt;li>先创建一张用户表：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">CREATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">varchar&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">32&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">nickname&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">varchar&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">32&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DEFAULT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NULL&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">PRIMARY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">ENGINE&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">InnoDB&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DEFAULT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">CHARSET&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">utf8&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>这里我们先使用默认的字符集和校对规则。&lt;/p>&lt;/blockquote>
+&lt;ul>
+&lt;li>插入两条数据：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">INSERT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INTO&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">cs_test&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">nickname&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">VALUES&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;user1&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;black&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">INSERT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INTO&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">cs_test&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">nickname&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">VALUES&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;user2&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;match&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>查询数据：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;user1&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;usER1&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这两条 SQL 语句的查询结果是一致的：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/query_user.png"
+width="479"
+height="203"
+srcset="https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/query_user_hu_86f3849f91798a56.png 480w, https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/query_user_hu_643224c4ed1556fb.png 1024w"
+loading="lazy"
+alt="query_user"
+class="gallery-image"
+data-flex-grow="235"
+data-flex-basis="566px"
+>&lt;/p>
+&lt;ul>
+&lt;li>现在我需要向&lt;code>users&lt;/code>表中插入一条&lt;code>username&lt;/code>为&lt;strong>useR1&lt;/strong>的&lt;strong>另外一个用户&lt;/strong>，发现报错了：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">INSERT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INTO&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">cs_test&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">nickname&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">VALUES&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;useR1&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;whatever&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/insert_error.png"
+width="563"
+height="386"
+srcset="https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/insert_error_hu_801a8bf0f5a8c888.png 480w, https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/insert_error_hu_92bb4d0917904d97.png 1024w"
+loading="lazy"
+alt="insert_error"
+class="gallery-image"
+data-flex-grow="145"
+data-flex-basis="350px"
+>&lt;/p>
+&lt;p>理由很简单：因为 MySQL 此时使用的是大小写不敏感的校对规则，所以 &lt;code>user1&lt;/code> 和 &lt;code>useR1&lt;/code> 是相等的，而 &lt;code>username&lt;/code> 是 &lt;code>users&lt;/code> 表的 &lt;strong>主键&lt;/strong>，所以在插入数据时会报主键冲突的错误。&lt;/p>
+&lt;ul>
+&lt;li>设置&lt;code>users&lt;/code>表的&lt;code>username&lt;/code>字段使用&lt;strong>大小写敏感&lt;/strong> 的校对规则：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">ALTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">TABLE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">cs_test&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">CHANGE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COLUMN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">username&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">VARCHAR&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">32&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">CHARACTER&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;utf8&amp;#39;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COLLATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;utf8_bin&amp;#39;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NULL&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>然后再次尝试插入数据，这次插入成功了。此时 &lt;code>users&lt;/code> 表中的数据如下：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/users.png"
+width="281"
+height="229"
+srcset="https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/users_hu_d644415624537240.png 480w, https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/users_hu_f19b98c9576f0c66.png 1024w"
+loading="lazy"
+alt="users"
+class="gallery-image"
+data-flex-grow="122"
+data-flex-basis="294px"
+>&lt;/p>
+&lt;ul>
+&lt;li>再次查询用户表：&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/query_user_again_1.png"
+width="423"
+height="173"
+srcset="https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/query_user_again_1_hu_5bf3c7108fea619f.png 480w, https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/query_user_again_1_hu_e90e5a03082450eb.png 1024w"
+loading="lazy"
+alt="query_user_again_1"
+class="gallery-image"
+data-flex-grow="244"
+data-flex-basis="586px"
+>&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/query_user_again_2.png"
+width="459"
+height="195"
+srcset="https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/query_user_again_2_hu_c3966d6b0c5d8094.png 480w, https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/query_user_again_2_hu_c334c42fa696a5f8.png 1024w"
+loading="lazy"
+alt="query_user_again_2"
+class="gallery-image"
+data-flex-grow="235"
+data-flex-basis="564px"
+>&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/query_user_again_3.png"
+width="494"
+height="204"
+srcset="https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/query_user_again_3_hu_3d4ebffc7f64c2a7.png 480w, https://www.blackmatch.cn/p/%E6%B5%85%E8%B0%88-mysql-%E4%B8%AD%E7%9A%84%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%97%AE%E9%A2%98/query_user_again_3_hu_73cf33efc75cbb6b.png 1024w"
+loading="lazy"
+alt="query_user_again_3"
+class="gallery-image"
+data-flex-grow="242"
+data-flex-basis="581px"
+>&lt;/p>
+&lt;p>发现这次 &lt;code>users&lt;/code> 表的 &lt;code>username&lt;/code> 字段已经彻底变成了 &lt;strong>大小写敏感&lt;/strong> 了。&lt;/p>
+&lt;h2 id="总结">总结
+&lt;/h2>&lt;ul>
+&lt;li>本文讨论的是 MySQL 数据校对规则的大小写敏感问题，而不是讨论表名的大小写敏感问题（网上很多文章都是讨论表名的大小写敏感问题）。&lt;/li>
+&lt;li>对 MySQL 的字符集和校对规则有一定的了解后有助于理解大小写敏感问题。&lt;/li>
+&lt;li>MySQL 的 &lt;code>utf8&lt;/code> 字符集并没有 &lt;code>utf8_general_cs&lt;/code> 校对规则，网上有些文章存在误导。&lt;/li>
+&lt;li>MySQL 的 &lt;code>utf8_bin&lt;/code> 校对规则是大小写敏感的。&lt;/li>
+&lt;li>MySQL 的 4 个级别优先级为：字段 (Column)&amp;gt; 表 (Table)&amp;gt; 数据库 (Database)&amp;gt; 服务器 (Server)，进行相关配置时尤其要注意。&lt;/li>
+&lt;li>最好不要对主键等其他含有索引的字段设置大小写敏感，容易导致索引失效，从业务角度考虑也不太合理。&lt;/li>
+&lt;/ul></description></item><item><title> 记一次从 Oracle 数据库取 BLOB 数据遇到的坑</title><link>https://www.blackmatch.cn/p/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BB%8E-oracle-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8F%96-blob-%E6%95%B0%E6%8D%AE%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/</link><pubDate>Tue, 12 Mar 2019 21:54:03 +0800</pubDate><guid>https://www.blackmatch.cn/p/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BB%8E-oracle-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8F%96-blob-%E6%95%B0%E6%8D%AE%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/</guid><description>&lt;h2 id="需求">需求
+&lt;/h2>&lt;p>![requirement]({{ site.url }}/images/oracle-blob-buffer/requirement.jpg)&lt;/p>
+&lt;p>源库中的数据是以 &lt;code>BLOB&lt;/code> 的形式存储的，且数据中含有中文， MySQL 数据库的字符集为 &lt;code>utf8&lt;/code>，最终想要的效果就是在浏览器中以文本的形式展示源库中的数据。为了实现这一需求，尝试了 2 种方案：&lt;/p>
+&lt;ul>
+&lt;li>从 Oracle 层面解决，通过视图将相关字段转换成 &lt;code>VARCHAR2&lt;/code> 类型后在返回，这样从 Oracle 中查询数据的时候，直接拿到的就是字符串类型的数据。这样做的弊端是： Oracle 数据库 VARCHAR2 类型最大只能支持 4kb，如果超过了这个大小就会出错。&lt;/li>
+&lt;li>从 Oracle 取到数据后，使用 Node.js 转换成字符串后再存入到 MySQL 数据库中。&lt;/li>
+&lt;/ul>
+&lt;p>我使用了第 2 种解决方案，但是过程并不是很顺利。&lt;/p>
+&lt;h2 id="遇到的问题">遇到的问题
+&lt;/h2>&lt;p>从 Oracle 数据库中取到的数据，在 Node.js 中是 &lt;code>Buffer&lt;/code> 对象，要将 Buffer 对象转换成字符串对 Node.js 来说实在是太常规了，直接 &lt;code>buffer.toString&lt;/code> 就完事了，可事实并非如此，得到的字符串都是乱码。一般遇到这个问题，大家的第一反应肯定是编码问题，我也是这么想的，考虑到数据中有中文，而 Node.js 原生并没有支持中文的相关编码，默认是 &lt;code>utf8&lt;/code>，已经尝试过了。所以就引入了 &lt;a class="link" href="https://github.com/ashtuchkin/iconv-lite" target="_blank" rel="noopener"
+>iconv-lite&lt;/a> 这个模块，用来对 Buffer 对象进行解码，但是 Oracle 中使用的字符集是 &lt;code>SIMPLIFIED CHINESE_CHINA.ZHS32GB18030&lt;/code>，所以我想当然的就使用 &lt;code>GB18030&lt;/code> 编码来解码，代码示例：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">iconv&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">require&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;iconv-lite&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Convert from an encoded buffer to js string.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">const&lt;/span> &lt;span class="nx">str&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">iconv&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">decode&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">buffer&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;gb18030&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>结果得到的字符串还是乱码，然后我又把 iconv-lite 支持的所有中文编码又试了一遍，得到的字符串全都是乱码。&lt;/p>
+&lt;h2 id="解决">解决
+&lt;/h2>&lt;p>经过一番 Google 和尝试后仍然没有解决，然后就在上述提到的两种方案之间来回折腾。后来在朋友的引导下，得到了一个思路：先探测 Buffer 对象的编码，得到确定的编码后，再进行解码。于是乎就找到了这个模块：&lt;a class="link" href="https://github.com/sonicdoe/detect-character-encoding" target="_blank" rel="noopener"
+>detect-character-encoding&lt;/a>。这个模块主要是用来探测字符编码的，使用方法也很简单，示例代码：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">fs&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">require&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;fs&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">detectCharacterEncoding&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">require&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;detect-character-encoding&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">fileBuffer&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">fs&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">readFileSync&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;file.txt&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">charsetMatch&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">detectCharacterEncoding&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">fileBuffer&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">charsetMatch&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// {
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// encoding: &amp;#39;UTF-8&amp;#39;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// confidence: 60
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// }
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>于是乎就用这个模块对上述提到的 Buffer 对象进行探测，得到的编码竟然是 &lt;code>UTF-16LE&lt;/code>，然后使用这个编码进行解码，果然得到了正确的字符串。问题到此彻底解决了。&lt;/p>
+&lt;h2 id="注意事项">注意事项
+&lt;/h2>&lt;ul>
+&lt;li>探测编码时请多用一些数据样例来探测，最后使用可信度最高的编码。&lt;/li>
+&lt;li>千万不要动态探测编码，然后动态解码，因为这个模块的探测结果是随着数据的变化而变化的。&lt;/li>
+&lt;li>使用 iconv-lite 模块解码时，如果编码名称中有字母，请一律使用小写字母。&lt;/li>
+&lt;li>一定要确保从 Oracle 取到的数据在 Node.js 环境中为 Buffer 对象。&lt;/li>
+&lt;/ul>
+&lt;h2 id="其他说明">其他说明
+&lt;/h2>&lt;ul>
+&lt;li>连接 Oracle 使用的模块是 &lt;a class="link" href="https://github.com/oracle/node-oracledb" target="_blank" rel="noopener"
+>oracledb&lt;/a>&lt;/li>
+&lt;li>连接 MySQL 使用的模块是 &lt;a class="link" href="https://github.com/tgriesser/knex" target="_blank" rel="noopener"
+>knex&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h2 id="总结">总结
+&lt;/h2>&lt;p>这次遇到的问题，其实解决方案是比较清晰的，但是在对 Buffer 进行解码遇到问题后没有冷静下来分析，在 2 个解决方案之间来回折腾浪费了很多时间；当已经很明确问题出现在哪个环节时，应该借助相关工具进一步确认问题的根源所在，比如：这次在解码环节出现了问题，而问题的根源也比较清晰，就是解码时使用的编码不对，所以就应该先明确 Buffer 对象所使用的编码，然后再用正确的编码进行解码即可。&lt;/p></description></item><item><title> 记一次使用 DB2 数据库遇到的坑</title><link>https://www.blackmatch.cn/p/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BD%BF%E7%94%A8-db2-%E6%95%B0%E6%8D%AE%E5%BA%93%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/</link><pubDate>Tue, 24 Apr 2018 02:27:07 +0800</pubDate><guid>https://www.blackmatch.cn/p/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BD%BF%E7%94%A8-db2-%E6%95%B0%E6%8D%AE%E5%BA%93%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/</guid><description>&lt;p>IBM DB2 是美国 IBM 公司开发的一套关系型数据库管理系统，它主要的运行环境为 UNIX（包括 IBM 自家的 AIX）、 Linux、 IBM i（旧称 OS/400 ）、 z/OS，以及 Windows 服务器版本。 DB2 主要应用于大型应用系统，具有较好的可伸缩性，可支持从大型机到单用户环境，应用于所有常见的服务器操作系统平台下。&lt;/p>
+&lt;p>我需要实现的技术方案如下：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BD%BF%E7%94%A8-db2-%E6%95%B0%E6%8D%AE%E5%BA%93%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/structure.webp"
+width="1080"
+height="390"
+srcset="https://www.blackmatch.cn/p/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BD%BF%E7%94%A8-db2-%E6%95%B0%E6%8D%AE%E5%BA%93%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/structure_hu_2d75b4fcfa1dad31.webp 480w, https://www.blackmatch.cn/p/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BD%BF%E7%94%A8-db2-%E6%95%B0%E6%8D%AE%E5%BA%93%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/structure_hu_33d0f998f60612eb.webp 1024w"
+loading="lazy"
+alt="debug"
+class="gallery-image"
+data-flex-grow="276"
+data-flex-basis="664px"
+>&lt;/p>
+&lt;p>需要从 db2 数据库中取数，然后把数据写入到 MySQL 数据中。&lt;/p>
+&lt;h2 id="理论知识">理论知识
+&lt;/h2>&lt;p>DB2 数据库几个概念&lt;/p>
+&lt;p>instance, 同一台机器上可以安装多个 DB2 instance。&lt;/p>
+&lt;p>database, 同一个 instance 下面可以创建有多个 database。&lt;/p>
+&lt;p>schema, 同一个 database 下面可以配置多个 schema。 所有的数据库对象包括 table、 view、 sequence， etc 都必须属于某一个 schema。&lt;/p>
+&lt;p>另外， database 是一个 connection 的目标对象，也就是说用户发起一个 DB2 连接时，指的是连接到到一个 database，而不是连接到一个 instance，也不是连接到一个 schema。&lt;/p>
+&lt;p>但是 DB2 的启动和关停是以 instance 为单位的。可以启动一个 instance，或者关停一个 instance。但不可以启动或者关停一个数据库或者一个 schema。&lt;/p>
+&lt;h2 id="使用的模块">使用的模块
+&lt;/h2>&lt;p>使用了 ibm_db，该模块在安装时会根据当前平台自动下载对应的客户端驱动程序。&lt;/p>
+&lt;p>第一坑
+遇到的第一坑是 CODEPAGE（代码页），可以简单的理解为这是数据库的编码，在 db2 数据库数据库中，如果客户端和服务端的 CODEPAGE 不一致，连接时会报错：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-plaintext" data-lang="plaintext">&lt;span class="line">&lt;span class="cl">SQL0332N Character conversion from the source code page &amp;#34;1386&amp;#34; to the target code page &amp;#34;819&amp;#34; is not supported
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>而使用的 ibm-db 中没有提到如何设置 CODEPAGE 的方式，在各种 google 攻略后，得到的解决方案有两个：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>修改客户端的操作系统语言。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>添加系统环境变量 &lt;code>DB2CODEPAGE&lt;/code>。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>我的后端架构为：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BD%BF%E7%94%A8-db2-%E6%95%B0%E6%8D%AE%E5%BA%93%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/server-layer.webp"
+width="720"
+height="692"
+srcset="https://www.blackmatch.cn/p/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BD%BF%E7%94%A8-db2-%E6%95%B0%E6%8D%AE%E5%BA%93%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/server-layer_hu_d3a1aea8ce6646dc.webp 480w, https://www.blackmatch.cn/p/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BD%BF%E7%94%A8-db2-%E6%95%B0%E6%8D%AE%E5%BA%93%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/server-layer_hu_79fdc3e86291b3b3.webp 1024w"
+loading="lazy"
+alt="debug"
+class="gallery-image"
+data-flex-grow="104"
+data-flex-basis="249px"
+>&lt;/p>
+&lt;p>最外层是 ubuntu 系统，然后起一个容器，容器是基于 ubuntu16.04 的，然后在容器中有一个 ETL 模块，这是一个 node 模块， node 通过调用这个模块去连接 db2 数据库。&lt;/p>
+&lt;p>不论我怎么修改最外层的 ubuntun 系统还是容器中的 unbuntu 系统的语言和环境变量，都不起作用。&lt;/p>
+&lt;p>最终解决方案：&lt;/p>
+&lt;p>在 &lt;code>ETL module&lt;/code> 模块中，在连接 db2 代码之前设置环境变量：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-plaintext" data-lang="plaintext">&lt;span class="line">&lt;span class="cl">process.env.DB2CODEPAGE = 1386;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="第二坑">第二坑
+&lt;/h2>&lt;p>成功连接到 db2 数据库后，发现取到的数据的中文是乱码。于是又开始在网上找攻略，大多数答案都是说 &lt;code>CODEPAGE&lt;/code> 问题。可是上一个坑已经解决了呀。优于无法直接访问到 db2 所在的服务器，所以无法很准确的确认 db2 数据库使用的 &lt;code>CODEPAGE&lt;/code> 值，但是经过各种调试及执行如下 SQL 语句：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-plaintext" data-lang="plaintext">&lt;span class="line">&lt;span class="cl">SELECT CODEPAGE FROM SYSCAT.DATATYPES WHERE TYPENAME = &amp;#39;VARCHAR&amp;#39;;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>得出的结论都是： db2 数据库的 &lt;code>CODEPAGE&lt;/code> 是 1386 ，可以理解成 db2 数据库的编码是 GBK。所以我把客户端的 CODEPAGE 设置成 1386 应该是没有问题的呀？但是实际情况就是中文无法正确展示。&lt;/p>
+&lt;p>最终解决方案：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-plaintext" data-lang="plaintext">&lt;span class="line">&lt;span class="cl">process.env.DB2CODEPAGE = 1208;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>将客户端的 CODEPAGE 设置成 1208 即可。一脸懵逼啊！此方案是我拍脑袋尝试后得出的。 1208 对应的编码是 utf8 。&lt;/p>
+&lt;h2 id="其他坑">其他坑
+&lt;/h2>&lt;ul>
+&lt;li>
+&lt;p>环境问题，项目自身的打包发布流程存在各种坑。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>ibm_db 问题， 2.1.0 之前的版本在连接上是存在一些问题的，我开始折腾的时候是 2.3.0 版本，其实这个版本也有一些问题，然后我提了个 issue，过了两天后更新到了 2.3.1 ，使用这个版本后神奇的解决了连接问题。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>使用 ibm_db 去连接 db2 数据库，不是真正的命令行客户端连接，而是使用了一个驱动程序去连接，所以网上的在客户端执行 &lt;code>db2set DB2CODEPAGE=1386&lt;/code> 的方法都行不通。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>使用 Node.js 连接 db2 数据库的相关资料较少，使用的人也少，搜到很多都是 java 的资料。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="总结">总结
+&lt;/h2>&lt;p>为了实现开头提到的技术方案，我加班加点花了差不多一个礼拜的时间，除了项目本身的打包、运行环境的坑以及对 db2 不熟悉外，其他问题大概花了两天左右。经过一个礼拜的折腾，对解决问题有了一些心得：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>环境很重要，因为我在本地开发环境是执行代码是比较顺利的，但是现场环境比较复杂，所以在解决问题之前要充分了解现场的软件环境，包括操作系统、版本等。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>如果是没遇到的东西，最后先去了解基本的概念、必要的基础知识。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>从最终代码执行处入手，如果我一开始就在使用代码连接 db2 的地方通过 &lt;code>process.env.DB2CODEPAGE&lt;/code> 打印出来的话，可能会省很多时间。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="参考资料">参考资料
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.jianshu.com/p/e1f38505f789" target="_blank" rel="noopener"
+>https://www.jianshu.com/p/e1f38505f789&lt;/a>&lt;/p></description></item></channel></rss>

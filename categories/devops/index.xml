@@ -1,0 +1,929 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DevOps on blackmatch 的个人博客</title><link>https://www.blackmatch.cn/categories/devops/</link><description>Recent content in DevOps on blackmatch 的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 16 Apr 2019 21:57:25 +0800</lastBuildDate><atom:link href="https://www.blackmatch.cn/categories/devops/index.xml" rel="self" type="application/rss+xml"/><item><title> 在 Linux 系统上通过二进制包安装 Node.js</title><link>https://www.blackmatch.cn/p/%E5%9C%A8-linux-%E7%B3%BB%E7%BB%9F%E4%B8%8A%E9%80%9A%E8%BF%87%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%8C%85%E5%AE%89%E8%A3%85-node.js/</link><pubDate>Tue, 16 Apr 2019 21:57:25 +0800</pubDate><guid>https://www.blackmatch.cn/p/%E5%9C%A8-linux-%E7%B3%BB%E7%BB%9F%E4%B8%8A%E9%80%9A%E8%BF%87%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%8C%85%E5%AE%89%E8%A3%85-node.js/</guid><description>&lt;h2 id="前言">前言
+&lt;/h2>&lt;p>Linux 有很多个发行版本，不同的发行版本有不同的包管理工具。为了安装指定的 Node.js 版本，有时候需要花一些精力找攻略或者安装额外的包管理工具等，有些包管理工具并没有最新的 Node.js 版本。所以，如果是 Linux 系统，索性直接使用编译好的二进制文件进行安装是最省心省力的。&lt;/p>
+&lt;h2 id="安装">安装
+&lt;/h2>&lt;ul>
+&lt;li>下载指定版本的二进制文件&lt;/li>
+&lt;/ul>
+&lt;p>在 Node.js 官方的发布网站 &lt;a class="link" href="https://nodejs.org/dist/" target="_blank" rel="noopener"
+>https://nodejs.org/dist/&lt;/a> 下载合适的二进制包，比如我要安装 &lt;code>v11.14.0&lt;/code> 版本，我需要下载二进制包为 &lt;a class="link" href="https://nodejs.org/dist/v11.14.0/node-v11.14.0-linux-x64.tar.gz" target="_blank" rel="noopener"
+>node-v11.14.0-linux-x64.tar.gz&lt;/a>。&lt;/p>
+&lt;ul>
+&lt;li>解压文件&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">tar -xvf node-v11.14.0-linux-x64.tar.gz
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>拷贝文件到指定目录&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">sudo cp -r node-v11.14.0-linux-x64/* /usr/local/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>测试是否安装成功&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">root@blackmatch:~# node -v
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">v11.14.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">root@blackmatch:~# npm -v
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">6.7.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">root@blackmatch:~# npx -v
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">6.7.0
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="总结">总结
+&lt;/h2>&lt;ul>
+&lt;li>二进制包一定要下载合适的（比如 x64 、 x86 ）等。&lt;/li>
+&lt;li>安装完成后如果相关命令不生效，请重新打开一个终端即可生效。&lt;/li>
+&lt;/ul></description></item><item><title> 使用 docker-compose 搭建 gitlab</title><link>https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/</link><pubDate>Wed, 03 Oct 2018 21:40:04 +0800</pubDate><guid>https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/</guid><description>&lt;h2 id="前言">前言
+&lt;/h2>&lt;p>前段时间，我写了一篇《&lt;span data-type="color" style="color:rgb(51, 51, 51)">&lt;span data-type="background" style="background-color:rgb(255, 255, 255)"> 使用 Gogs 搭建自己的 Git 服务 &lt;/span>&lt;/span>》，结果大家都不太看好 Gogs，我在使用 Gogs 几天后，感觉是：搭建简单，对性能要求不高。也正因为简单和消耗资源少， Gogs 慢慢的无法满足日益复杂的 DevOps 需求，比如 &lt;code>CI/CD&lt;/code> （ continuous integration and continuous delivery，持续集成和持续交付）、性能问题等。对于 &lt;code>Gogs&lt;/code> 和 &lt;code>gitlab&lt;/code> 我不作评论，这里有一篇来自 gitlab 官网相当于竞品分析的文章：&lt;a class="link" href="https://about.gitlab.com/comparison/gogs-vs-gitlab.html" target="_blank" rel="noopener"
+>https://about.gitlab.com/comparison/gogs-vs-gitlab.html&lt;/a>。本文主要介绍如何使用 &lt;code>docker-compose&lt;/code> 搭建 &lt;code>gitlab&lt;/code> 。&lt;/p>
+&lt;h2 id="准备工作">准备工作
+&lt;/h2>&lt;p>关于使用 docker/docker-compose 搭建 gitlab，其实有很多教程了，官方也有相应的介绍。但是，我搜到的很多教程使用的 docker 镜像是来自民间大牛的开源镜像：&lt;a class="link" href="https://github.com/sameersbn/docker-gitlab" target="_blank" rel="noopener"
+>https://github.com/sameersbn/docker-gitlab&lt;/a>，对于有点强迫症的我来说，既然 gitlab 官方提供了镜像，为何不用官方的呢？其次就是， gitlab 官方关于使用 docker-compose 搭建 gitlab 的描述篇幅较少，一些细节问题需要自己实践后才会遇到。下面一步一步介绍我的折腾过程，就当是自己的学习笔记吧。官方的教程在这里：&lt;a class="link" href="https://docs.gitlab.com/omnibus/docker/#install-gitlab-using-docker-compose" target="_blank" rel="noopener"
+>https://docs.gitlab.com/omnibus/docker/#install-gitlab-using-docker-compose&lt;/a>。在开始之前，先介绍一下我的装备（穷不是我的错。。。）：&lt;/p>
+&lt;ul>
+&lt;li>一台 2012 年买的华硕笔记本，露个脸吧：&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/11.png"
+width="539"
+height="719"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/11_hu_64194efac9bedf9e.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/11_hu_4fad048585ca4d31.png 1024w"
+loading="lazy"
+alt="11"
+class="gallery-image"
+data-flex-grow="74"
+data-flex-basis="179px"
+>&lt;/p>
+&lt;p>这台笔记本是我读大学用的『战机』，被我花巨资改造了一下：内存加到了 8G，换上一个 128G 的固态硬盘。这个笔记本在我读大学的时候已经被折腾过好多次了，自从毕业后就很少用了，所以拿出来在家里当服务器用，装了 win10 、 VirtualBox，然后装了一个 Ubuntu18.04.1 的虚拟机，分了 4G 内存、 40G 硬盘，安装好 docker、 docker-compose。&lt;/p>
+&lt;ul>
+&lt;li>一台低配版 Mac mini。 8G 内存、 1T 硬盘，用终端连接 Ubuntu 服务器。题外话：直接在我的 Mac mini 上搭建 gitlab，发现有点带不起来，可能是因为我装了太多软件了。&lt;/li>
+&lt;/ul>
+&lt;p>硬件就这两台电脑，云服务器目前是买不起的，也没有必要。下面开始折腾吧。&lt;/p>
+&lt;h2 id="先让-gitlab-跑起来">先让 gitlab 跑起来
+&lt;/h2>&lt;p>在 Ubuntu 服务器上拉取 gitlab-ce 官方镜像：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="n">docker&lt;/span> &lt;span class="n">pull&lt;/span> &lt;span class="n">gitlab&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="nb">gitlab-ce&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="mf">11.3&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="mf">1&lt;/span>&lt;span class="n">-ce&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">0&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>注意：我使用的 tag 是 &lt;code>11.3.1-ce.0&lt;/code>&lt;/p>&lt;/blockquote>
+&lt;p>新建一个 &lt;code>docker-compose.yml&lt;/code> 文件，写入如下内容：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">version&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;3&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">services&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">web&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;gitlab/gitlab-ce:11.3.1-ce.0&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">container_name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">gitlab&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">environment&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">GITLAB_OMNIBUS_CONFIG&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">|&lt;/span>&lt;span class="sd">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> external_url &amp;#39;http://git.blackmatch.cn&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">ports&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;80:80&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;443:443&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;33:22&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">volumes&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;./srv/gitlab/config:/etc/gitlab&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;./srv/gitlab/logs:/var/log/gitlab&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;./srv/gitlab/data:/var/opt/gitlab&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>保存文件，在该文件目录下执行：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">docker-compose&lt;/span> &lt;span class="n">up&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>然后会看到终端上刷刷刷 ~~~ 滚动很多内容，耐心等待一会（我这里大概 3 分钟左右），然后在我的 Mac mini 的浏览器上访问 &lt;code>http://git.blackmatch.cn&lt;/code> （我事先已经将域名和 Ubuntu 服务器的 IP 做了 hosts 映射），看到如下界面：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/22.png"
+width="1067"
+height="573"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/22_hu_6e395287b1d52e08.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/22_hu_d64e77a25d433d92.png 1024w"
+loading="lazy"
+alt="22"
+class="gallery-image"
+data-flex-grow="186"
+data-flex-basis="446px"
+>&lt;/p>
+&lt;p>看到这个界面说明 gitlab 已经成功跑起来了，可以在这个界面设置 &lt;code>root&lt;/code> 账号的密码，然后使用 &lt;code>root&lt;/code> 账号登录系统：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/33.png"
+width="1011"
+height="493"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/33_hu_aa4bd8d35de97539.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/33_hu_8efb76ceed5977ca.png 1024w"
+loading="lazy"
+alt="33"
+class="gallery-image"
+data-flex-grow="205"
+data-flex-basis="492px"
+>&lt;/p>
+&lt;p>登录成功后的界面是这样的：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/44.png"
+width="1570"
+height="659"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/44_hu_ca7d31527cdbe0b5.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/44_hu_b997910466a059c1.png 1024w"
+loading="lazy"
+alt="44"
+class="gallery-image"
+data-flex-grow="238"
+data-flex-basis="571px"
+>&lt;/p>
+&lt;p>我来创建一个项目看看：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/55.png"
+width="1584"
+height="740"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/55_hu_99054483d114d49b.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/55_hu_c6b512c0854e004.png 1024w"
+loading="lazy"
+alt="55"
+class="gallery-image"
+data-flex-grow="214"
+data-flex-basis="513px"
+>&lt;/p>
+&lt;p>这个新建项目的 &lt;code>HTTP&lt;/code> 地址为：&lt;a class="link" href="http://git.blackmatch.cn/root/test.git" target="_blank" rel="noopener"
+>http://git.blackmatch.cn/root/test.git&lt;/a>，这里顺带提一下，这里的地址中的 &lt;code>git.blackmatch.cn&lt;/code> 就是我在 &lt;code>docker-compose.yml&lt;/code> 文件中配置的环境变量：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">environment&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">GITLAB_OMNIBUS_CONFIG&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">|&lt;/span>&lt;span class="sd">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> external_url &amp;#39;http://git.blackmatch.cn&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这里的 &lt;code>external_url&lt;/code> 配置的是外部 URL，会影响项目的访问地址，如果不配置，项目的访问地址会是一个随机字符串，在云服务器上搭建时尤其要注意这一点。&lt;/p>
+&lt;h2 id="开启邮件服务">开启邮件服务
+&lt;/h2>&lt;p>我们在使用 &lt;code>github&lt;/code> 等类似的平台工具的时候都会用到邮件服务，比如你在 &lt;code>github&lt;/code> 上进行注册、密码重置、有人给你的开源项目提 issue 等等的时候，你通常都会收到邮件提醒。 &lt;code>gitlab&lt;/code> 肯定也会有这个功能的，下面我们就来开启这个功能，在此之前需要准备一个邮箱账号，这个账号是用来负责发送邮件的，需要开启 &lt;code>smtp&lt;/code> 协议支持。使用 &lt;code>CTRL&lt;/code> + &lt;code>C&lt;/code> 快捷键停止正在运行中的 gitlab 容器，然后修改 &lt;code>docker-compose.yml&lt;/code> 为如下内容（这里以 gmail 邮箱为例）：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">version&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;3&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">services&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">web&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;gitlab/gitlab-ce:11.3.1-ce.0&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">container_name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">gitlab&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">environment&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">GITLAB_OMNIBUS_CONFIG&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">|&lt;/span>&lt;span class="sd">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> external_url &amp;#39;http://git.blackmatch.cn&amp;#39;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> # email setting
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_enable&amp;#39;] = true
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_address&amp;#39;] = &amp;#34;smtp.gmail.com&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_port&amp;#39;] = 587
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_user_name&amp;#39;] = &amp;#34;my.email@gmail.com&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_password&amp;#39;] = &amp;#34;my-gmail-password&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_domain&amp;#39;] = &amp;#34;smtp.gmail.com&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_authentication&amp;#39;] = &amp;#34;login&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_enable_starttls_auto&amp;#39;] = true
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_tls&amp;#39;] = false
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_openssl_verify_mode&amp;#39;] = &amp;#39;peer&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">ports&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;80:80&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;443:443&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;33:22&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">volumes&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;./srv/gitlab/config:/etc/gitlab&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;./srv/gitlab/logs:/var/log/gitlab&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;./srv/gitlab/data:/var/opt/gitlab&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>将配置中的 &lt;code>my.email@gmail.com&lt;/code> 和 &lt;code>my-gmail-password&lt;/code> 替换为你自己的邮箱和密码，记得一定要开启邮箱的 &lt;code>smtp&lt;/code> 协议服务，否则无法发送邮件。其他邮箱的配置方式大同小异，详细的介绍可以看这里：&lt;a class="link" href="https://docs.gitlab.com/omnibus/settings/smtp.html" target="_blank" rel="noopener"
+>https://docs.gitlab.com/omnibus/settings/smtp.html&lt;/a>。保存配置文件，然后执行 &lt;code>docker-compose up&lt;/code> ，然后使用 &lt;code>root&lt;/code> 账号登录 gitlab，新建一个账户（注意正确填写新建账户的邮箱地址），新建账户成功后，会给新账户的邮箱发送一封邮件，如下：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/66.png"
+width="666"
+height="470"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/66_hu_f7be5628a8ebaf4e.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/66_hu_6bd8762c144bb895.png 1024w"
+loading="lazy"
+alt="66"
+class="gallery-image"
+data-flex-grow="141"
+data-flex-basis="340px"
+>&lt;/p>
+&lt;p>至此，邮件服务已成功启用。&lt;/p>
+&lt;h2 id="安装-git-runner">安装 git-runner
+&lt;/h2>&lt;p>前面我提到， gitlab 支持 CI/CD，如果我们需要对某个项目进行持续集成 / 持续交付，则需要给该项目配置一些任务，当我们每次 push 代码的时候，自动触发这些预先配置好的任务，而这些任务的执行者就是 gitlab-runner。可以简单的概括一下 gitlab 和 gitlab-runner 的关系： gitlab 在监测到有代码提交时，通知 gitlab-runner 去执行一些任务， gitlab-runner 执行完这些任务后将执行的结果反馈给 gitlab。所以，如果要开启 CI/CD，需要先完成两件事： 1. 在服务器上安装好 gitlab-runner； 2. 注册 gitlab-runner，打通 gitlab 和 gitlab-runner 之间的交互。在服务器上安装 gitlab-runner 的步骤如下：&lt;/p>
+&lt;ul>
+&lt;li>下载二进制安装包&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="nb">wget &lt;/span>&lt;span class="n">-O&lt;/span> &lt;span class="p">/&lt;/span>&lt;span class="n">usr&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">local&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">bin&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="nb">gitlab-runner&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="p">//&lt;/span>&lt;span class="nb">gitlab-runner&lt;/span>&lt;span class="n">-downloads&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">s3&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">amazonaws&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">latest&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">binaries&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="nb">gitlab-runner&lt;/span>&lt;span class="n">-linux-amd64&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>修改权限：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">chmod&lt;/span> &lt;span class="p">+&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="p">/&lt;/span>&lt;span class="n">usr&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">local&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">bin&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="nb">gitlab-runner&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>在服务器上新增一个用户（ gitlab-runner），专门用于执行 CI/CD 任务：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">useradd&lt;/span> &lt;span class="p">-&lt;/span>&lt;span class="n">-comment&lt;/span> &lt;span class="s1">&amp;#39;GitLab Runner&amp;#39;&lt;/span> &lt;span class="p">-&lt;/span>&lt;span class="n">-create-home&lt;/span> &lt;span class="nb">gitlab-runner&lt;/span> &lt;span class="p">-&lt;/span>&lt;span class="n">-shell&lt;/span> &lt;span class="p">/&lt;/span>&lt;span class="n">bin&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">bash&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>执行安装：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="nb">gitlab-runner&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="p">-&lt;/span>&lt;span class="n">-user&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="nb">gitlab-runner&lt;/span> &lt;span class="p">-&lt;/span>&lt;span class="n">-working-directory&lt;/span>&lt;span class="p">=/&lt;/span>&lt;span class="n">home&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="nb">gitlab-runner&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>启动 gitlab-runner：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="nb">gitlab-runner&lt;/span> &lt;span class="nb">start
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>接下来就是注册 gitlab-runner，只有注册之后 gitlab 和 gitlab-runner 之间才能交互。使用 &lt;code>root&lt;/code> 账号登录 gitlab 之后，在路由 &lt;code>/admin/runners&lt;/code> 下可以看到注册 gitlab-runner 需要用到的 &lt;code>URL&lt;/code> 和 &lt;code>token&lt;/code> 。如下：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/77.png"
+width="1150"
+height="792"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/77_hu_efbd51ca2cffc714.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/77_hu_9b4178fffac13f5f.png 1024w"
+loading="lazy"
+alt="77"
+class="gallery-image"
+data-flex-grow="145"
+data-flex-basis="348px"
+>&lt;/p>
+&lt;p>在服务器上执行：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="nb">gitlab-runner&lt;/span> &lt;span class="n">register&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>然后根据提示输入 &lt;code>URL&lt;/code> 和 &lt;code>token&lt;/code> 等信息就可以了，过程如下：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/88.png"
+width="915"
+height="261"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/88_hu_5af6dbaebf18fdc9.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/88_hu_66f54dc4e653a23e.png 1024w"
+loading="lazy"
+alt="88"
+class="gallery-image"
+data-flex-grow="350"
+data-flex-basis="841px"
+>&lt;/p>
+&lt;p>好吧。。。报错了，这个可能是我的 &lt;code>URL&lt;/code> 是域名，但是服务器没有配置 &lt;code>hosts&lt;/code> ，故在服务器上无法通过域名访问 gitlab，修改一下服务器的 &lt;code>/etc/hosts&lt;/code> 文件，重新注册一下：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/99.png"
+width="914"
+height="291"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/99_hu_1a2f87be719f1783.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/99_hu_849814fdfc771bac.png 1024w"
+loading="lazy"
+alt="99"
+class="gallery-image"
+data-flex-grow="314"
+data-flex-basis="753px"
+>&lt;/p>
+&lt;p>这回注册成功了，需要注意的是，在注册 gitlab-runner 的时候，需要选择一个或者多个执行器（ executor），不同的执行器有不同的特性和功能，如果你不知道怎么选择，可以先看看这里：&lt;a class="link" href="https://docs.gitlab.com/runner/executors/README.html#i-am-not-sure" target="_blank" rel="noopener"
+>https://docs.gitlab.com/runner/executors/README.html#i-am-not-sure&lt;/a>。我这里选择了最简单的 &lt;code>shell&lt;/code> 执行器，&lt;code>shell&lt;/code> 执行器可以让 gitlab-runner 在执行任务的时候直接使用 shell 命令，但是如果用到一些构建工具，必须事先在服务器上安装这些工具，例如：在代码提交后通知 gitlab-runner 执行 &lt;code>npm run build&lt;/code> 命令来构建项目，则需要事先在服务器上安装 &lt;code>npm&lt;/code> 。 gitlab-runner 注册成功后，刷新一下网页，会看到多了一个 runner：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/110.png"
+width="1566"
+height="795"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/110_hu_6dba18b8904deb4c.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/110_hu_beb2d2fee00951cd.png 1024w"
+loading="lazy"
+alt="110"
+class="gallery-image"
+data-flex-grow="196"
+data-flex-basis="472px"
+>&lt;/p>
+&lt;p>这样我们就可以使用这个 runner 为我们执行任务了，这里需要注意的是，新创建的 runner，默认情况下，只对打 &lt;code>tag&lt;/code> 的 &lt;code>commit&lt;/code> 触发任务，如果想要每一次提交代码都执行，则需要修改 runner 的配置，如下：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/111.png"
+width="960"
+height="736"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/111_hu_f167d6e61e31f084.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/111_hu_9f6ae49efc12006d.png 1024w"
+loading="lazy"
+alt="111"
+class="gallery-image"
+data-flex-grow="130"
+data-flex-basis="313px"
+>&lt;/p>
+&lt;p>至此， gitlab-runner 就已开启成功了，可以对项目进行 CI/CD 配置了。&lt;/p>
+&lt;h2 id="测试-cicd">测试 CI/CD
+&lt;/h2>&lt;p>经过前面的部署，目前我搭建的 gitlab 已经可以使用 CI 功能了，这里我简单的测试一下这个功能，前面我们已经使用 &lt;code>root&lt;/code> 用户创建了一个 &lt;code>test&lt;/code> 项目，将这个项目 &lt;code>clone&lt;/code> 到我的 Mac mini 电脑上，然后在项目根目录下分别创建 &lt;code>app.js&lt;/code> 和 &lt;code>.gitlab-ci.yml&lt;/code> 这两个文件，要启用 gitlab 的 CI 功能，除了需要正配安装并配置好 gitlab-runner 外，还需要在每个项目的根目录下创建一个名为 &lt;code>.gitlab-ci.yml&lt;/code> 文件，并在这个文件下配置具体的任务，例如我们可以简单的测试一下 gitlab-runner 是否能正常运行， &lt;code>.gitlab-ci.yml&lt;/code> 文件内容如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">release&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">script&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="l">cp ./app.js /home/gitlab-runner/release&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这里就设置一个很简单的任务：将项目中的 &lt;code>app.js&lt;/code> 文件拷贝到服务器的 &lt;code>/home/gitlab-runner/release&lt;/code> 目录下。在我的 Mac mini 上对 &lt;code>test&lt;/code> 项目修改的内容提交到服务器，会触发 gitlab-runner 执行任务，结果如下：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/112.png"
+width="1362"
+height="475"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/112_hu_29d6a5c637bf6ec8.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/112_hu_c6b0d3e9987b9a96.png 1024w"
+loading="lazy"
+alt="112"
+class="gallery-image"
+data-flex-grow="286"
+data-flex-basis="688px"
+>&lt;/p>
+&lt;p>需要注意的是， gitlab-runner 在服务器上执行每个项目预先配置的任务的时候是以 &lt;code>gitlab-runner&lt;/code> 用户的身份执行，所以要注意权限的问题，我第一次提交的时候，因为 &lt;code>release&lt;/code> 目录是我用服务器的 &lt;code>root&lt;/code> 权限创建的，所以 &lt;code>gitlab-runner&lt;/code> 用户没有权限将文件复制到该目录下，修改目录所有者后，第二次提交就成功了，如下：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/113.png"
+width="1065"
+height="451"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/113_hu_dee120ffbc79a33f.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/113_hu_c0c1cc3cba96dd8c.png 1024w"
+loading="lazy"
+alt="113"
+class="gallery-image"
+data-flex-grow="236"
+data-flex-basis="566px"
+>&lt;/p>
+&lt;p>至此， gitlab-runner 执行 CI 任务就测试成功了。当然这只是一个很简单的测试， gitlab 还有很多关于 CI/CD、 Auto DevOps 等方面的功能特性，对持续集成、持续交付、提升项目质量等方面都有很大的帮助，大家感兴趣可以多去尝试。&lt;/p>
+&lt;h2 id="完整的配置">完整的配置
+&lt;/h2>&lt;p>经过上面的配置和调试，目前的 gitlab 已经能满足开发工作流中一些常用的需求，如果没有其他需求，可以直接把该容器投入到生产中，完整的 &lt;code>docker-compose.yml&lt;/code> 文件内容如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">version&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;3&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">services&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">web&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s1">&amp;#39;gitlab/gitlab-ce:11.3.1-ce.0&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">container_name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">gitlab&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">restart&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">always&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">environment&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">GITLAB_OMNIBUS_CONFIG&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">|&lt;/span>&lt;span class="sd">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> external_url &amp;#39;http://git.blackmatch.cn&amp;#39;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> # email setting
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_enable&amp;#39;] = true
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_address&amp;#39;] = &amp;#34;smtp.gmail.com&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_port&amp;#39;] = 587
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_user_name&amp;#39;] = &amp;#34;my.email@gmail.com&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_password&amp;#39;] = &amp;#34;my-gmail-password&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_domain&amp;#39;] = &amp;#34;smtp.gmail.com&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_authentication&amp;#39;] = &amp;#34;login&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_enable_starttls_auto&amp;#39;] = true
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_tls&amp;#39;] = false
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> gitlab_rails[&amp;#39;smtp_openssl_verify_mode&amp;#39;] = &amp;#39;peer&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">ports&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;80:80&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;443:443&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;33:22&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">volumes&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;./srv/gitlab/config:/etc/gitlab&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;./srv/gitlab/logs:/var/log/gitlab&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s1">&amp;#39;./srv/gitlab/data:/var/opt/gitlab&amp;#39;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>保存文件后，使用如下命令启动容器：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">docker-compose&lt;/span> &lt;span class="n">up&lt;/span> &lt;span class="n">-d&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>至此， gitlab 已成功部署。&lt;/p>
+&lt;h2 id="其他需要注意的问题">其他需要注意的问题
+&lt;/h2>&lt;ul>
+&lt;li>gitlab 对服务器的性能要求较高，至少要保证有 4G 的内存，否则很容易出现各种奇怪的问题，比如网页 502 等。&lt;/li>
+&lt;li>gitlab-runner 在执行任务的时候不对你的项目做任何修改，因为其原理是：先把项目所有内容 &lt;code>fetch&lt;/code> （默认）或者 &lt;code>clone&lt;/code> 到 &lt;code>/home/gitlab-runner&lt;/code> 目录下，然后再执行相关的任务操作，不会对你的项目做任何修改。&lt;/li>
+&lt;li>每次修改完 &lt;code>docker-compose.yml&lt;/code> 文件后，重新启动容器可能会花费较多的时间，请耐心等待。&lt;/li>
+&lt;li>汉化问题，可能较老的 gitlab-ce 版本需要专门下载一个中文包来做汉化，现在只需要在账户登录后，在账户设置中将 &lt;code>Preferred language&lt;/code> 设置成 &lt;code>简体中文&lt;/code> 即可，保存设置后刷新界面，效果如下：&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/114.png"
+width="1375"
+height="890"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/114_hu_24649a134e7e7d8a.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-docker-compose-%E6%90%AD%E5%BB%BA-gitlab/114_hu_c979dd7abfca7e49.png 1024w"
+loading="lazy"
+alt="114"
+class="gallery-image"
+data-flex-grow="154"
+data-flex-basis="370px"
+>&lt;/p>
+&lt;h2 id="参考资料">参考资料
+&lt;/h2>&lt;p>&lt;a class="link" href="https://docs.gitlab.com/omnibus/docker/#install-gitlab-using-docker-compose" target="_blank" rel="noopener"
+>https://docs.gitlab.com/omnibus/docker/#install-gitlab-using-docker-compose&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://docs.gitlab.com/runner/" target="_blank" rel="noopener"
+>https://docs.gitlab.com/runner/&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://www.jianshu.com/p/2b43151fb92e" target="_blank" rel="noopener"
+>https://www.jianshu.com/p/2b43151fb92e&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://docs.gitlab.com/omnibus/settings/smtp.html" target="_blank" rel="noopener"
+>https://docs.gitlab.com/omnibus/settings/smtp.html&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://docs.gitlab.com/runner/executors/README.html" target="_blank" rel="noopener"
+>https://docs.gitlab.com/runner/executors/README.html&lt;/a>&lt;/p></description></item><item><title> 开启 bbr 差点引发一场血案</title><link>https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/</link><pubDate>Fri, 28 Sep 2018 21:37:40 +0800</pubDate><guid>https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/</guid><description>&lt;h2 id="故事背景">故事背景
+&lt;/h2>&lt;p>我在 vultr 上有一台 VPS，由于服务器在洛杉矶，在国内访问速度比较慢。以前有听说 Google 的 bbr 拥塞算法能够提高 tcp 的传输速度，于是想着把 bbr 打开。我的服务器环境如下：&lt;/p>
+&lt;ul>
+&lt;li>操作系统： CentOS7&lt;/li>
+&lt;li>Linux 内核版本： 3.10.0&lt;/li>
+&lt;li>SELINUX 配置： disabled&lt;/li>
+&lt;li>docker 版本： 18.06.1-ce&lt;/li>
+&lt;/ul>
+&lt;h2 id="开启-bbr">开启 bbr
+&lt;/h2>&lt;p>开启 bbr 需要先把 Linux 内核版本升级到 4.10 以上，所以首先需要升级内核。我是根据这个教程 &lt;a class="link" href="https://www.vultr.com/docs/how-to-deploy-google-bbr-on-centos-7" target="_blank" rel="noopener"
+>https://www.vultr.com/docs/how-to-deploy-google-bbr-on-centos-7&lt;/a> 一步一步操作的，最后将 Linux 内核版本升级到了 4.18.9 ，最后也成功开启了 bbr，感觉访问速度稍微开了那么一点点。&lt;/p>
+&lt;h2 id="docker-服务无法启动了">docker 服务无法启动了
+&lt;/h2>&lt;p>开启 bbr 后发现 docker 服务起不来了，尝试过几次删掉重装，结果还是一样，排查得到如下报错：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-plain" data-lang="plain">&lt;span class="line">&lt;span class="cl">unable to configure the Docker daemon with file /etc/docker/daemon.json
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>把这个报错仍 Google，尝试了几个方案都不行。继续折腾，再根据报错信息：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-plain" data-lang="plain">&lt;span class="line">&lt;span class="cl">failed to start docker application
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>继续 Google，在 segmentfault 找到了这个问答：&lt;a class="link" href="https://segmentfault.com/q/1010000002392472" target="_blank" rel="noopener"
+>https://segmentfault.com/q/1010000002392472&lt;/a>，感觉和我的情况很像啊。暗喜中。。。看到这个问题有好多人回答，我就从上往下一个一个试，其中有个回答是：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/11.png"
+width="1726"
+height="274"
+srcset="https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/11_hu_54725add5ab8af03.png 480w, https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/11_hu_95a305b80b020e79.png 1024w"
+loading="lazy"
+alt="11"
+class="gallery-image"
+data-flex-grow="629"
+data-flex-basis="1511px"
+>&lt;/p>
+&lt;p>那我就照做 :&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-plain" data-lang="plain">&lt;span class="line">&lt;span class="cl">vim /etc/selinux/config
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">i
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">edit...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wq
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">shutdown -r now
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>一顿操作猛如虎，然后喝口茶等待系统重启。。。等了一两分钟，使用 ssh 连接服务，突然给我来一个惊喜：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-plain" data-lang="plain">&lt;span class="line">&lt;span class="cl">permission denied
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="系统无法登录了">系统无法登录了
+&lt;/h2>&lt;p>ssh 连不过去了，卧槽这是什么情况。因为我的服务器只有 &lt;code>root&lt;/code> 账号，我一直都是用 &lt;code>root&lt;/code> 账号登录的，想尝试其他账号也不行了。我意识到肯定是我刚才修改了 &lt;code>SELINUX&lt;/code> 配置导致，但是现在登不进去系统想改回来也不行啊。虽然我对 Linux 懂的不多，但是这个时候一定要保持冷静，继续喝一口茶。想到了找学弟帮忙，学弟是做运维的，对 Linux 特别熟，大学时候和他一起培训过几天 Linux。学弟提醒我可以去 VPS 提供商的后台管理界面看看能不能做些什么。于是我登录到 vultr，进入后台管理界面，发现有一个 &lt;code>View Console&lt;/code> 操作，如下：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/22.png"
+width="766"
+height="224"
+srcset="https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/22_hu_ade921021149be4d.png 480w, https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/22_hu_316dfa3ff71afaa0.png 1024w"
+loading="lazy"
+alt="22"
+class="gallery-image"
+data-flex-grow="341"
+data-flex-basis="820px"
+>&lt;/p>
+&lt;p>点击，弹出一个窗口，进入了一个 Linux 终端：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/33.png"
+width="1500"
+height="956"
+srcset="https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/33_hu_593e97ca854903f9.png 480w, https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/33_hu_3fa831a65999cd7e.png 1024w"
+loading="lazy"
+alt="33"
+class="gallery-image"
+data-flex-grow="156"
+data-flex-basis="376px"
+>&lt;/p>
+&lt;p>哈哈！感觉看到了希望，输入账号、密码，用力敲一下回车键，啪！提示：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-plain" data-lang="plain">&lt;span class="line">&lt;span class="cl">permission denied
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>什么鬼？？？结果还是一样啊！还是登不进去啊！冷静冷静。。。继续喝口茶， Google 一番尝试了一些方法，都不行。茶已经喝完啦，脾气也上来了。想着直接把系统重置了吧，反正也没有特别重要的数据。说时迟那时快，当我快要点击重置系统按钮的时候，脑子里突然闪过一个画面，就像动漫主角快要被干掉时突然开挂了一样，这个画面就是：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/44.png"
+width="1500"
+height="956"
+srcset="https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/44_hu_19db5abe67204ab4.png 480w, https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/44_hu_2332c7fb8bb3e4f1.png 1024w"
+loading="lazy"
+alt="44"
+class="gallery-image"
+data-flex-grow="156"
+data-flex-basis="376px"
+>&lt;/p>
+&lt;p>这个难道就是传说中的恢复模式？不管了，点一下看看，出现了这个界面：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/55.png"
+width="1266"
+height="716"
+srcset="https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/55_hu_76e8bae6f9831053.png 480w, https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/55_hu_ce7298056cd7634a.png 1024w"
+loading="lazy"
+alt="55"
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="424px"
+>&lt;/p>
+&lt;p>卧槽！我感觉还能抢救一下。看个这个，感觉又看到了希望，外挂已上线 ~~ 哈哈哈。说实话，我对这个界面真的不熟，只知道这里有很多个内核，可以选择任何一个系统启动。于是问学弟，结果被学弟鄙视，让我我按照忘记密码的套路去操作，接下来又是一波搜索。经过一番倒腾，终于找到了一个可行的方案，具体操作如下：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/66.png"
+width="1502"
+height="866"
+srcset="https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/66_hu_1f9d5d2c96a7f8d3.png 480w, https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/66_hu_5c77259a268a9d0e.png 1024w"
+loading="lazy"
+alt="66"
+class="gallery-image"
+data-flex-grow="173"
+data-flex-basis="416px"
+>&lt;/p>
+&lt;p>选中一个内核，我这里选择的是我更新后的内核，按下键盘上的 &lt;code>e&lt;/code> 键进入编辑模式，然后使用 &lt;code>向下键&lt;/code> 一直往后翻，找到 &lt;code>rhgb quiet LANG=en_US.UTF-8&lt;/code> 在后面加上 &lt;code>enforcing=0&lt;/code> ，如下：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/77.png"
+width="1500"
+height="864"
+srcset="https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/77_hu_f6e280e960f28b4c.png 480w, https://www.blackmatch.cn/p/%E5%BC%80%E5%90%AF-bbr-%E5%B7%AE%E7%82%B9%E5%BC%95%E5%8F%91%E4%B8%80%E5%9C%BA%E8%A1%80%E6%A1%88/77_hu_641f41965dbdcf07.png 1024w"
+loading="lazy"
+alt="77"
+class="gallery-image"
+data-flex-grow="173"
+data-flex-basis="416px"
+>&lt;/p>
+&lt;p>然后按下 &lt;code>Ctrl&lt;/code> + &lt;code>x&lt;/code> 启动系统，正确输入账号、密码，再次用力敲一下回车键，这次终于等进去了！！！总算是抢救回来了，然后里面修改 &lt;code>SELINUX&lt;/code> 配置，又是一顿操作猛如虎，重启之后能正常登录了，彻底好了。&lt;/p>
+&lt;h2 id="docker-服务怎么办">docker 服务怎么办
+&lt;/h2>&lt;p>虽然已经能够正常登录服务器了，但是 docker 还是老样子起不来。但是，在系统无法登录那一刻，我冥冥之中已经感觉到 docker 的问题应该如何解决了，因为我看到了这个回答：&lt;/p>
+&lt;p>![88]({{ site.url }}/images/centos-enable-bbr/88.png)&lt;/p>
+&lt;p>我的直觉向来很准的，因为读大学的时候自己经常折腾各种黑科技之类的，这种感觉我很熟悉，哈哈哈。按照这个方法操作，&lt;strong>最后 docker 服务真的好了&lt;/strong>，哈哈哈！&lt;/p>
+&lt;h2 id="结束语">结束语
+&lt;/h2>&lt;p>本来都已经打算重置系统了，没想到最后 bbr 成开启了， docker 服务也弄好，真是成功逆袭了啊！因为我对 Linux 不是很熟，所以大牛们可能觉得这根本不算是什么事，对我来说那可是相当惊险刺激啊！感谢学弟的耐心指导，我以后一定会努力学习 Linux 的。最后友情提示：&lt;/p>
+&lt;p>&lt;strong>没事不要升级 Linux 内核！&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>没事不要乱改 SELINUX 配置！&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>没事不要瞎折腾！&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>注意备份重要数据！&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>注意备份重要数据！&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>注意备份重要数据！&lt;/strong>&lt;/p></description></item><item><title> 使用 Gogs 搭建自己的 Git 服务</title><link>https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-gogs-%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84-git-%E6%9C%8D%E5%8A%A1/</link><pubDate>Sat, 22 Sep 2018 21:34:58 +0800</pubDate><guid>https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-gogs-%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84-git-%E6%9C%8D%E5%8A%A1/</guid><description>&lt;h2 id="什么是-gogs">什么是 Gogs
+&lt;/h2>&lt;p>Gogs 是一款极易搭建的自助 Git 服务。作为程序员，可能对 Github 已经非常熟悉了，我们经常会把自己的代码提交到 Github。非付费用户在 Github 的代码是公开的，任何人都可以看到你提交的代码。有时候我们不想让别人看到自己提交的代码，或者只是想让我们授权的人访问自己的代码，通常会有一下几种方式：&lt;/p>
+&lt;ul>
+&lt;li>成为付费用户（不限平台），创建私有仓库。&lt;/li>
+&lt;li>选择拥有一定数量免费私有仓库的平台，比如： Bitbucket 等。&lt;/li>
+&lt;li>自己搭建完全免费的 Git 服务，比如： Gitlab 等。&lt;/li>
+&lt;/ul>
+&lt;p>Gogs 属于最后一种方式，这是一个开源项目，核心代码使用 Go 语言编写， UI 使用的是 Semantic-UI。&lt;span data-type="color" style="color:rgba(0, 0, 0, 0.87)">&lt;span data-type="background" style="background-color:rgb(255, 255, 255)">Gogs 的目标是打造一个最简单、最快速和最轻松的方式搭建自助 Git 服务。 Go 目前支持 29 种语言，简体中文是必须的。&lt;/span>&lt;/span>&lt;/p>
+&lt;h2 id="gogs-的使用场景">Gogs 的使用场景
+&lt;/h2>&lt;p>Gogs 适合中小团队使用，工作流和大部分的 Git 服务类似，可以创建组织、仓库和工单（ issue），也可以把其他平台的仓库迁移过来。总的来说， Gog 能满足中小团队大部分的 Git 工作流需求。&lt;/p>
+&lt;h2 id="为什么推荐-gogs">为什么推荐 Gogs
+&lt;/h2>&lt;p>其实现在已经有很多类似的产品了，而且也都是免费的，有些甚至不用自己搭建，打开网页就能用，比如： Gitlab、码云等。我推荐 Gogs 只要是因为：&lt;/p>
+&lt;ul>
+&lt;li>完全开源，遵循 MIT 协议。&lt;/li>
+&lt;li>核心代码使用 Go 语言编写（个人喜好）。&lt;/li>
+&lt;li>官方完美支持中文。&lt;/li>
+&lt;li>极易搭建。&lt;/li>
+&lt;li>极简风格。&lt;/li>
+&lt;/ul>
+&lt;h2 id="如何搭建">如何搭建
+&lt;/h2>&lt;p>官方提供了 5 种搭建方式，分别是：&lt;/p>
+&lt;ul>
+&lt;li>二进制安装&lt;/li>
+&lt;li>源码安装&lt;/li>
+&lt;li>包管理安装&lt;/li>
+&lt;li>采用 Docker 部署&lt;/li>
+&lt;li>通过 Vagrant 安装&lt;/li>
+&lt;/ul>
+&lt;p>Gogs 需要将一部分数据保存到数据库中，所以需要数据库支持，可以使用以下几种数据库：&lt;/p>
+&lt;ul>
+&lt;li>MySQL：版本 &amp;gt;= 5.7&lt;/li>
+&lt;li>PostgreSQL&lt;/li>
+&lt;li>MSSQL&lt;/li>
+&lt;li>TiDB（实验性支持，使用 MySQL 协议连接）&lt;/li>
+&lt;li>或者 什么都不安装 直接使用 SQLite3&lt;/li>
+&lt;/ul>
+&lt;p>根据官方文档的安装步骤一步一步搭建即可。但是，偷懒是程序员的必备技能之一啊！其实，搭建就分两部分： Gogs 主程序和数据库。 Gogs 主程序官方提供了 Docker 镜像，数据库也能找到对应的 Docker 镜像，于是自然而然就能想到 Docker 三剑客之一的 Docker Compose。大家可以使用我写的一个 docker-compose.yml 文件（数据库使用的是 MySQL），地址是：&lt;a class="link" href="https://github.com/blackmatch/gogs-docker-compose" target="_blank" rel="noopener"
+>https://github.com/blackmatch/gogs-docker-compose&lt;/a>，几分钟就能轻松搭建好。&lt;/p>
+&lt;h2 id="一些截图">一些截图
+&lt;/h2>&lt;p>从官网搬来几张截图供大家欣赏：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-gogs-%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84-git-%E6%9C%8D%E5%8A%A1/11.png"
+width="1015"
+height="762"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-gogs-%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84-git-%E6%9C%8D%E5%8A%A1/11_hu_5b918fac536a36ef.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-gogs-%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84-git-%E6%9C%8D%E5%8A%A1/11_hu_e1d62deccce11dc2.png 1024w"
+loading="lazy"
+alt="11"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="319px"
+>&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-gogs-%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84-git-%E6%9C%8D%E5%8A%A1/22.png"
+width="1015"
+height="762"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-gogs-%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84-git-%E6%9C%8D%E5%8A%A1/22_hu_893d50e00d624cec.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-gogs-%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84-git-%E6%9C%8D%E5%8A%A1/22_hu_6ec0dc3f87b2c5e1.png 1024w"
+loading="lazy"
+alt="22"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="319px"
+>&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-gogs-%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84-git-%E6%9C%8D%E5%8A%A1/33.png"
+width="1012"
+height="758"
+srcset="https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-gogs-%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84-git-%E6%9C%8D%E5%8A%A1/33_hu_c91194526b9a014f.png 480w, https://www.blackmatch.cn/p/%E4%BD%BF%E7%94%A8-gogs-%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84-git-%E6%9C%8D%E5%8A%A1/33_hu_2da2be9304fc4cc9.png 1024w"
+loading="lazy"
+alt="33"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>&lt;/p>
+&lt;h2 id="更多信息">更多信息
+&lt;/h2>&lt;p>官网：&lt;a class="link" href="https://gogs.io/" target="_blank" rel="noopener"
+>https://gogs.io/&lt;/a>&lt;/p>
+&lt;p>官方体验网站：&lt;a class="link" href="https://try.gogs.io/" target="_blank" rel="noopener"
+>https://try.gogs.io/&lt;/a>&lt;/p></description></item><item><title>CentOS 通过 letsencrypt 实现 HTTPS</title><link>https://www.blackmatch.cn/p/centos-%E9%80%9A%E8%BF%87-letsencrypt-%E5%AE%9E%E7%8E%B0-https/</link><pubDate>Tue, 08 May 2018 21:07:51 +0800</pubDate><guid>https://www.blackmatch.cn/p/centos-%E9%80%9A%E8%BF%87-letsencrypt-%E5%AE%9E%E7%8E%B0-https/</guid><description>&lt;p>&lt;a class="link" href="https://letsencrypt.org/" target="_blank" rel="noopener"
+>letsencrypt&lt;/a> 提供了免费的 SSL 证书服务，我们可以用它来实现 HTTPS。我的服务器系统是 CentOS7 ，使用的 server 程序是 &lt;a class="link" href="https://nginx.org/en/" target="_blank" rel="noopener"
+>nginx&lt;/a>。下面分享我使用 letsencrypt 的过程。官方推荐使用 &lt;a class="link" href="https://certbot.eff.org/" target="_blank" rel="noopener"
+>certbot&lt;/a> 工具。&lt;/p>
+&lt;ul>
+&lt;li>开启 CentOS 的 EPEL 扩展&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">yum install -y epel-release-latest-7.noarch.rpm
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>安装 certbot&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">yum install -y certbot-nginx
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>停止 nginx 服务&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">systemctl stop nginx
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>生成 SSL 证书&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">certbot certonly --standalone -d blackmatch.cn -d www.blackmatch.cn
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>中途需要输入邮箱、同意协议等，按照提示操作即可。&lt;/p>
+&lt;blockquote>
+&lt;p>把域名替换成你自己的域名。&lt;/p>&lt;/blockquote>
+&lt;ul>
+&lt;li>配置 nginx 文件，编辑 &lt;code>/etc/nginx/conf.d/default.conf&lt;/code>，参考我的配置：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">server {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> listen 80;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> server_name blackmatch.cn www.blackmatch.cn;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> return 301 https://$server_name$request_uri;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">server {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> listen 443 ssl;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> server_name blackmatch.cn www.blackmatch.cn;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ssl_certificate /etc/letsencrypt/live/blackmatch.cn/fullchain.pem;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ssl_certificate_key /etc/letsencrypt/live/blackmatch.cn/privkey.pem;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ssl_session_cache shared:le_nginx_SSL:1m;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ssl_session_timeout 1440m;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ssl_prefer_server_ciphers on;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ssl_ciphers &amp;#34;ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS&amp;#34;;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> root /usr/share/nginx/html;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> index index.html index.htm;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> error_page 404 /404.html;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>保存退出文件&lt;/p>
+&lt;ul>
+&lt;li>启动 nginx&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">systemctl start nginx
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>测试&lt;/li>
+&lt;/ul>
+&lt;p>在浏览器访问 &lt;a class="link" href="https://blackmatch.cn/" target="_blank" rel="noopener"
+>blackmatch.cn&lt;/a>，如果配置成功应该像这样的：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/centos-%E9%80%9A%E8%BF%87-letsencrypt-%E5%AE%9E%E7%8E%B0-https/web.png"
+width="232"
+height="41"
+srcset="https://www.blackmatch.cn/p/centos-%E9%80%9A%E8%BF%87-letsencrypt-%E5%AE%9E%E7%8E%B0-https/web_hu_6ebf935eb2f79142.png 480w, https://www.blackmatch.cn/p/centos-%E9%80%9A%E8%BF%87-letsencrypt-%E5%AE%9E%E7%8E%B0-https/web_hu_34508ce753130224.png 1024w"
+loading="lazy"
+alt="image"
+class="gallery-image"
+data-flex-grow="565"
+data-flex-basis="1358px"
+>&lt;/p>
+&lt;p>如果失败，请根据错误提示寻找合适的解决方案。&lt;/p>
+&lt;ul>
+&lt;li>定期更新证书&lt;/li>
+&lt;/ul>
+&lt;p>证书的默认有效期是 3 个月，所以每三个月要更新一次证书。可以通过 Linux 的 &lt;code>crontab&lt;/code> 来定期更新证书，使用 &lt;code>crontab -e&lt;/code> 命令打开编辑界面，最后添加一行：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">&lt;span class="m">0&lt;/span> &lt;span class="m">0&lt;/span> &lt;span class="m">1&lt;/span> * * certbot renew
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>然后保存并退出。这样就设置了每个月 1 号的 0 点 0 分自动刷新证书。&lt;/p></description></item></channel></rss>

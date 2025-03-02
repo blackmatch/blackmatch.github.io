@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>GRPC on blackmatch 的个人博客</title><link>https://www.blackmatch.cn/tags/grpc/</link><description>Recent content in GRPC on blackmatch 的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 02 Mar 2025 07:14:00 +0800</lastBuildDate><atom:link href="https://www.blackmatch.cn/tags/grpc/index.xml" rel="self" type="application/rss+xml"/><item><title>gRPC 学习备忘</title><link>https://www.blackmatch.cn/p/grpc-%E5%AD%A6%E4%B9%A0%E5%A4%87%E5%BF%98/</link><pubDate>Sun, 02 Mar 2025 07:14:00 +0800</pubDate><guid>https://www.blackmatch.cn/p/grpc-%E5%AD%A6%E4%B9%A0%E5%A4%87%E5%BF%98/</guid><description>&lt;p>什么是 gRPC？&lt;/p>
+&lt;blockquote>
+&lt;p>A high performance, open source universal RPC framework.&lt;/p>&lt;/blockquote>
+&lt;p>&lt;code>gRCP&lt;/code> 是一个高性能、开源的、通用的 RPC 框架：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/grpc-%E5%AD%A6%E4%B9%A0%E5%A4%87%E5%BF%98/grpc-architecture.svg"
+loading="lazy"
+alt="gRPC 架构"
+>&lt;/p>
+&lt;p>从上图可以看出：&lt;/p>
+&lt;ul>
+&lt;li>gRPC 分为服务端（Server）和客户端（Stub/Client）两个部分&lt;/li>
+&lt;li>服务端和客户端之间通过 &lt;code>Protocal Buffers&lt;/code> 协议进行通讯&lt;/li>
+&lt;li>服务端和客户端支持跨语言调用&lt;/li>
+&lt;/ul>
+&lt;p>gRPC 支持众多主流编程语言：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/grpc-%E5%AD%A6%E4%B9%A0%E5%A4%87%E5%BF%98/grpc-supported-language.jpg"
+width="626"
+height="692"
+srcset="https://www.blackmatch.cn/p/grpc-%E5%AD%A6%E4%B9%A0%E5%A4%87%E5%BF%98/grpc-supported-language_hu_c3a1bcaf553205fa.jpg 480w, https://www.blackmatch.cn/p/grpc-%E5%AD%A6%E4%B9%A0%E5%A4%87%E5%BF%98/grpc-supported-language_hu_e4330c15203b1d76.jpg 1024w"
+loading="lazy"
+alt="gRPC 支持的编程语言"
+class="gallery-image"
+data-flex-grow="90"
+data-flex-basis="217px"
+>&lt;/p>
+&lt;p>下面通过一个 Hello world demo 来逐步了解 gRPC。&lt;/p>
+&lt;h2 id="protocal-buffers">Protocal Buffers
+&lt;/h2>&lt;blockquote>
+&lt;p>Protocol Buffers are a language-neutral, platform-neutral extensible mechanism for serializing structured data.&lt;/p>&lt;/blockquote>
+&lt;p>简单来说 &lt;a class="link" href="https://protobuf.dev/overview/" target="_blank" rel="noopener"
+>Protocal Buffers&lt;/a> 是一套用于序列化和反序列化数据的机制，与平台无关，与语言无关，gRPC 默认使用这套机制。举个例子 &lt;code>./proto/greeter.proto&lt;/code>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-proto" data-lang="proto">&lt;span class="line">&lt;span class="cl">&lt;span class="n">syntax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;proto3&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">option&lt;/span> &lt;span class="n">go_package&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;./greeter&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c1">// The greeting service definition.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">service&lt;/span> &lt;span class="n">Greeter&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="c1">// Sends a greeting
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">rpc&lt;/span> &lt;span class="n">SayHello&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">HelloRequest&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">returns&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">HelloReply&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c1">// The request message containing the user&amp;#39;s name.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">HelloRequest&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c1">// The response message containing the greetings
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">HelloReply&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="kd">message&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>&lt;code>syntax = &amp;quot;proto3&amp;quot;;&lt;/code> 是固定写法，显式声明使用 Protocal Buffers 的 version 3 版本。&lt;/li>
+&lt;li>&lt;code>option go_package = &amp;quot;./greeter&amp;quot;;&lt;/code> 是定义生成 Go 语言的配置，这里的配置会在当前目录下生成一个 &lt;code>greeter&lt;/code> 目录，里面的报名也是 &lt;code>greeter&lt;/code>。其他语言写法大同小异。&lt;/li>
+&lt;li>&lt;code>service&lt;/code> 是 Protocal Buffers 用来定义一个微服务的关键字，service 里面可以定义各种微服务需要提供的方法，最主要的就是要声明入参（这里是 &lt;code>HelloRequest&lt;/code>）和出参（这里是 &lt;code>HelloReply&lt;/code>）。&lt;/li>
+&lt;li>&lt;code>message&lt;/code> 是 Protocal Buffers 用来定义一个结构体的关键字，对应的 Go 语言的 &lt;code>struct&lt;/code> 关键字。&lt;/li>
+&lt;/ul>
+&lt;p>Protocal Buffers 有自己的基本数据类型，并且能契合各种编程语言：&lt;/p>
+&lt;p>&lt;img src="https://www.blackmatch.cn/p/grpc-%E5%AD%A6%E4%B9%A0%E5%A4%87%E5%BF%98/protocal-buffers-data-type.jpg"
+width="2522"
+height="1650"
+srcset="https://www.blackmatch.cn/p/grpc-%E5%AD%A6%E4%B9%A0%E5%A4%87%E5%BF%98/protocal-buffers-data-type_hu_6787d261563e933b.jpg 480w, https://www.blackmatch.cn/p/grpc-%E5%AD%A6%E4%B9%A0%E5%A4%87%E5%BF%98/protocal-buffers-data-type_hu_d64ce75dab30e9c0.jpg 1024w"
+loading="lazy"
+alt="Protocal Buffers 的数据类型"
+class="gallery-image"
+data-flex-grow="152"
+data-flex-basis="366px"
+>&lt;/p>
+&lt;p>Protocal Buffers 使用 &lt;code>.proto&lt;/code> 作为文件后缀，定义好相关内容后，就可以使用配套的工具生成对应编程语言所需要的代码文件，这里以 Go 语言为例，在 &lt;code>./proto&lt;/code> 目录下执行：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">protoc --go_out&lt;span class="o">=&lt;/span>./ *.proto
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这个命令主要是根据 &lt;code>message&lt;/code> 关键字定义的内容生成 Go 语言对应的结构体及一些相关的函数，会生成一个名为 &lt;code>./proto/greeter/greeter.pb.go&lt;/code> 文件，这个文件可以直接在 Go 语言代码中引用，具体内容就不展开了。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">protoc --go-grpc_out&lt;span class="o">=&lt;/span>./ *.proto
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这个命令会生成 gRPC 所需的一些接口和方法，会生成一个名为 &lt;code>./proto/greeter/greeter_grpc.pb.go&lt;/code> 文件，这个文件里包含很多内容，这里挑几个重要的解释一下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// The greeting service definition.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">type&lt;/span> &lt;span class="nx">GreeterClient&lt;/span> &lt;span class="kd">interface&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Sends a greeting&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">SayHello&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Context&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">in&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">HelloRequest&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">opts&lt;/span> &lt;span class="o">...&lt;/span>&lt;span class="nx">grpc&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">CallOption&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">HelloReply&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">error&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这个 interface 是根据 Protocal Buffer 中 &lt;code>service&lt;/code> 关键字定义的内容来生成的，定义一个 gRPC 接口，包含相关的函数。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">RegisterGreeterServer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">s&lt;/span> &lt;span class="nx">grpc&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ServiceRegistrar&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">srv&lt;/span> &lt;span class="nx">GreeterServer&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// If the following call pancis, it indicates UnimplementedGreeterServer was&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// embedded by pointer and is nil. This will cause panics if an&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// unimplemented method is ever invoked, so we test this at initialization&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// time to prevent it from happening at runtime later due to I/O.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">t&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ok&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">srv&lt;/span>&lt;span class="p">.(&lt;/span>&lt;span class="kd">interface&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="nf">testEmbeddedByValue&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">});&lt;/span> &lt;span class="nx">ok&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">t&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">testEmbeddedByValue&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">RegisterService&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">Greeter_ServiceDesc&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">srv&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这一段是用于 gRPC 服务端注册服务时使用的。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">NewGreeterClient&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">cc&lt;/span> &lt;span class="nx">grpc&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ClientConnInterface&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nx">GreeterClient&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">greeterClient&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="nx">cc&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这一段是用于 gRPC 客户端跟服务端建立连接时使用的。&lt;/p>
+&lt;p>通过 Protocal Buffers 配套工具生成的代码文件是服务端和客户端通用的，一份 &lt;code>.proto&lt;/code> 文件可以生成多份不同编程语言的代码。上述生成 Go 语言代码的例子用到了 3 个工具：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">brew install protobuf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">brew install protoc-gen-go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">brew install protoc-gen-go-grpc
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>&lt;code>protobuf&lt;/code> 是主程序，在命令行通过 &lt;code>protoc&lt;/code> 使用。&lt;/li>
+&lt;li>&lt;code>protoc-gen-go&lt;/code> 对应 &lt;code>--go_out&lt;/code> 参数，用于生成 &lt;code>greeter.pb.go&lt;/code> 文件。&lt;/li>
+&lt;li>&lt;code>protoc-gen-go-grpc&lt;/code> 对应 &lt;code>--go-grpc_out&lt;/code> 参数，用于生成 &lt;code>greeter_grpc.pb.go&lt;/code> 文件。&lt;/li>
+&lt;/ul>
+&lt;h2 id="服务端server">服务端（Server）
+&lt;/h2>&lt;p>服务端的构建分为以下几个步骤：&lt;/p>
+&lt;ul>
+&lt;li>新建一个结构体，将 Protocal Buffers 中定义的服务的方法实现并绑定到这个结构体。&lt;/li>
+&lt;li>新建一个 gRPC 服务。&lt;/li>
+&lt;li>将上述新建的结构体注册到新建的 gRPC 服务中。&lt;/li>
+&lt;li>新建一个监听器，用于将 gRPC 服务暴露到某个端口。&lt;/li>
+&lt;li>启动 gRPC 服务。&lt;/li>
+&lt;/ul>
+&lt;p>完整的代码示例如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">type&lt;/span> &lt;span class="nx">server&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">greeter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">UnimplementedGreeterServer&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">s&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">server&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">SayHello&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">_&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Context&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">in&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">greeter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">HelloRequest&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">greeter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">HelloReply&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">error&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">greeter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">HelloReply&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="nx">Message&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s">&amp;#34;Hello &amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nx">in&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Name&lt;/span>&lt;span class="p">},&lt;/span> &lt;span class="kc">nil&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">grpcServer&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">grpc&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewServer&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">greeter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">RegisterGreeterServer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">grpcServer&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">server&lt;/span>&lt;span class="p">{})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">listener&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">net&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Listen&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;tcp&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;:8080&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatalf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;failed to listen: %v&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">defer&lt;/span> &lt;span class="nx">listener&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Close&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">grpcServer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Serve&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">listener&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatalf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;failed to serve: %v&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="客户端stubclient">客户端（Stub/Client）
+&lt;/h2>&lt;p>客户端调用服务端分为以下几个步骤：&lt;/p>
+&lt;ul>
+&lt;li>新建一个 gRPC 客户端连接。&lt;/li>
+&lt;li>使用这个 gRPC 连接新建一个 Protocal Buffers 生成的客户端。&lt;/li>
+&lt;li>使用新建的客户端直接调用服务端的方法。&lt;/li>
+&lt;/ul>
+&lt;p>完整的代码如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">clientConn&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">grpc&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewClient&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;localhost:8080&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">grpc&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">WithTransportCredentials&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">insecure&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewCredentials&lt;/span>&lt;span class="p">()))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Error connecting to server&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">greeterClient&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">greeter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewGreeterClient&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">clientConn&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">res&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">greeterClient&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">SayHello&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Background&lt;/span>&lt;span class="p">(),&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">greeter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">HelloRequest&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="nx">Name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s">&amp;#34;World&amp;#34;&lt;/span>&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Error calling SayHello&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">res&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Message&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这里的 &lt;code>grpc.WithTransportCredentials(insecure.NewCredentials())&lt;/code> 参数是指客户端不实用任何安全机制跟服务端通讯，是明文传输，这里是本地 demo 调试，不用在意。生产环境通常需要配置 TLS，使用 &lt;code>credentials.NewTLS()&lt;/code>。&lt;/p>
+&lt;h2 id="参考资料">参考资料
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://grpc.io/docs/what-is-grpc/introduction/" target="_blank" rel="noopener"
+>https://grpc.io/docs/what-is-grpc/introduction/&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://protobuf.dev/programming-guides/proto3/" target="_blank" rel="noopener"
+>https://protobuf.dev/programming-guides/proto3/&lt;/a>&lt;/li>
+&lt;/ul></description></item></channel></rss>
